@@ -20,6 +20,7 @@ export interface OCRProcessingOptions {
   onStatusChange?: (status: ProcessingStatus) => void;
   onError?: (error: OCRApiError) => void;
   onComplete?: (result: string) => void;
+  onReset?: () => void;
 }
 
 export function useOCRProcessing(options: OCRProcessingOptions = {}) {
@@ -168,7 +169,8 @@ export function useOCRProcessing(options: OCRProcessingOptions = {}) {
 
   const reset = useCallback(() => {
     cancel();
-  }, [cancel]);
+    options.onReset?.();
+  }, [cancel, options]);
 
   // Cleanup on unmount
   const cleanup = useCallback(() => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FilePond, registerPlugin } from 'react-filepond';
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
@@ -18,6 +18,14 @@ interface FileUploadProps {
 
 export function FileUpload({ onComplete }: FileUploadProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const filePondRef = useRef<FilePond>(null);
+  
+  const handleReset = () => {
+    setSelectedFile(null);
+    if (filePondRef.current) {
+      filePondRef.current.removeFiles();
+    }
+  };
   
   const ocrProcessing = useOCRProcessing({
     onComplete: (result) => {
@@ -26,6 +34,7 @@ export function FileUpload({ onComplete }: FileUploadProps) {
     onStatusChange: (status) => {
       console.log('OCR processing status:', status);
     },
+    onReset: handleReset,
   });
 
   const { state, processFile, retry, cancel, reset } = ocrProcessing;
@@ -96,6 +105,7 @@ export function FileUpload({ onComplete }: FileUploadProps) {
 
         <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
           <FilePond
+            ref={filePondRef}
             allowMultiple={false}
             acceptedFileTypes={['application/pdf']}
             maxFileSize="100MB"

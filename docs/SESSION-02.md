@@ -249,8 +249,70 @@ Once Phase 2 is complete, Phase 3 will implement:
 
 **Phase 2 Status: ✅ COMPLETED**
 
+## Issues Discovered During Testing
+
+### 🐛 Bug: "Process Another File" Re-processes Same File
+
+**Issue Description:**
+When user clicks "Process Another File" button after successful OCR processing, instead of allowing a new file upload, the system automatically re-processes the previously uploaded file.
+
+**Root Cause Analysis:**
+1. **State Management Mismatch**: Two separate state systems managing file selection
+   - `selectedFile` state in FileUpload component (src/components/FileUpload.tsx:20)
+   - `state.file` in useOCRProcessing hook (src/hooks/useOCRProcessing.ts)
+
+2. **Reset Logic Gap**: `onReset` function only clears OCR processing state
+   - ProcessingStates.tsx:89 calls `onReset` 
+   - useOCRProcessing.ts:169 `reset()` only clears processing state
+   - FileUpload component's `selectedFile` remains set to previous file
+
+3. **Auto-Processing Trigger**: useEffect in FileUpload re-triggers processing
+   - FileUpload.tsx:54-58 auto-starts processing when `selectedFile` exists and status is 'idle'
+   - After reset, status becomes 'idle' but `selectedFile` still contains previous file
+
+**Technical Details:**
+```typescript
+// Problem flow:
+// 1. User uploads file → selectedFile = file1, processing completes
+// 2. User clicks "Process Another File" → onReset() called
+// 3. OCR state resets to 'idle', but selectedFile still = file1  
+// 4. useEffect triggers: if (selectedFile && state.status === 'idle') 
+// 5. processFile(selectedFile) called with file1 again
+```
+
+**Impact:** Poor user experience, confusion, prevents new file uploads
+
+## Bug Fix Implementation Plan
+
+### TODO List:
+1. ✅ Log bug in SESSION-02.md with technical analysis
+2. ✅ Update useOCRProcessing hook to support external state clearing callback
+3. ✅ Modify FileUpload component to clear selectedFile on reset
+4. ✅ Add FilePond ref to programmatically clear its state
+5. ✅ Test complete user flow end-to-end
+
+### Fix Implementation:
+
+**useOCRProcessing Hook Changes:**
+- Added `onReset?: () => void` callback to OCRProcessingOptions interface
+- Modified `reset()` function to call `options.onReset?.()` after clearing state
+
+**FileUpload Component Changes:**
+- Added `filePondRef` using `useRef<FilePond>(null)`
+- Created `handleReset()` function to clear both `selectedFile` state and FilePond files
+- Connected `handleReset` to `onReset` callback in useOCRProcessing options
+- Added `ref={filePondRef}` to FilePond component
+
+**Result:**
+- "Process Another File" button now properly resets UI to empty upload state
+- FilePond component clears and shows upload area
+- No auto-processing of previous file occurs
+- User can select and process new files correctly
+
+**Status**: ✅ COMPLETED
+
 ## Next Steps (Phase 3)
-With Phase 2 complete, the foundation is ready for Phase 3 implementation:
+With Phase 2 complete and bug fixes implemented, the foundation is ready for Phase 3 implementation:
 1. PDF viewer component with react-pdf
 2. Text output component for OCR results  
 3. Side-by-side comparison layout
