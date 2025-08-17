@@ -123,7 +123,8 @@ src/
 **Progress Overview:**
 - **Phase 1**: ✅ Complete - Project setup with React, TypeScript, Vite, Tailwind, shadcn/ui, FilePond, and react-pdf
 - **Phase 2**: ✅ Complete - n8n webhook integration, error handling, processing states, and upload flow
-- **Phase 3-5**: ⏳ Pending - PDF viewer, text display, comparison features, and deployment
+- **Phase 3**: 🚧 In Progress - PDF viewer configuration resolved, components pending
+- **Phase 4-5**: ⏳ Pending - Comparison features and deployment
 
 **Key Completed Items:**
 - ✅ React + TypeScript + Vite project structure
@@ -136,6 +137,7 @@ src/
 - ✅ OCR processing hook with retry logic
 - ✅ Processing states component with visual feedback
 - ✅ End-to-end upload → OCR → text extraction flow
+- ✅ PDF.js worker configuration and version compatibility resolved
 
 **Next Priorities:**
 1. Build PDF viewer component with react-pdf
@@ -157,8 +159,8 @@ src/
 3. ✅ Integrate n8n webhook API calls with proper timeouts
 4. ✅ Add comprehensive error handling and retry logic
 
-### Phase 3: PDF Viewing & Text Display (Day 3) ⏳
-1. ⏳ Setup react-pdf with canvas rendering
+### Phase 3: PDF Viewing & Text Display (Day 3) 🚧
+1. ✅ Setup react-pdf with canvas rendering (worker configuration resolved)
 2. ⏳ Implement page navigation and zoom controls
 3. ⏳ Create text output component with markdown rendering
 4. ⏳ Add synchronized scrolling between panels
@@ -185,7 +187,7 @@ src/
 - **Progress Tracking**: Real-time bandwidth calculation
 
 ### react-pdf Setup
-- **Worker Path**: Proper PDF.js worker configuration
+- **Worker Path**: ✅ Proper PDF.js worker configuration (version 5.3.93 compatibility)
 - **Canvas Rendering**: For complex layout preservation
 - **Memory Management**: Efficient page caching
 - **Error Handling**: Fallback for corrupted PDFs
@@ -234,3 +236,19 @@ src/
 - ✅ Robust error handling for network/processing failures
 
 This plan specifically addresses the challenges of processing image-heavy, complex PDFs that require OCR rather than simple text extraction.
+
+## Recent Updates & Fixes
+
+### PDF.js Worker Version Compatibility Issue (August 17, 2025)
+**Problem:** PDF viewer failing with "The API version '5.3.93' does not match the Worker version '5.4.54'"
+
+**Root Cause:** Version mismatch between react-pdf v10.1.0 (uses PDF.js v5.3.93) and installed pdfjs-dist v5.4.54
+
+**Solution Applied:**
+- Fixed package.json: `"pdfjs-dist": "5.3.93"` (exact version match)
+- Verified build success with proper worker bundling
+- Development server confirmed working on localhost:5177
+
+**Key Learning:** PDF.js requires exact version alignment between API and Worker components
+
+**Status:** ✅ Resolved - PDF viewer now ready for component implementation

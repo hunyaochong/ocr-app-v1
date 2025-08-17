@@ -13,7 +13,7 @@ import 'filepond/dist/filepond.min.css';
 registerPlugin(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
 
 interface FileUploadProps {
-  onComplete?: (result: string) => void;
+  onComplete?: (result: string, file: File) => void;
 }
 
 export function FileUpload({ onComplete }: FileUploadProps) {
@@ -29,7 +29,9 @@ export function FileUpload({ onComplete }: FileUploadProps) {
   
   const ocrProcessing = useOCRProcessing({
     onComplete: (result) => {
-      onComplete?.(result);
+      if (selectedFile) {
+        onComplete?.(result, selectedFile);
+      }
     },
     onStatusChange: (status) => {
       console.log('OCR processing status:', status);

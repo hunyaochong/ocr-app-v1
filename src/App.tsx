@@ -1,13 +1,75 @@
 import { useState } from 'react';
 import { FileUpload } from '@/components/FileUpload';
+import { ComparisonView } from '@/components/ComparisonView';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 
 function App() {
+  const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [extractedText, setExtractedText] = useState<string | null>(null);
+  const [showComparison, setShowComparison] = useState(false);
 
-  const handleOCRComplete = (result: string) => {
+  const handleOCRComplete = (result: string, file: File) => {
     setExtractedText(result);
+    setCurrentFile(file);
+    setShowComparison(true);
     console.log('OCR processing completed:', result);
   };
+
+  const handleBackToUpload = () => {
+    setShowComparison(false);
+    setCurrentFile(null);
+    setExtractedText(null);
+  };
+
+  const handleCopyText = () => {
+    if (extractedText) {
+      navigator.clipboard.writeText(extractedText);
+    }
+  };
+
+  if (showComparison && currentFile && extractedText) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="h-screen flex flex-col">
+          {/* Header */}
+          <header className="bg-white border-b border-gray-200 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleBackToUpload}
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Upload New File
+                </Button>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">OCR Processing App</h1>
+                  <p className="text-sm text-gray-600">
+                    PDF and text comparison view
+                  </p>
+                </div>
+              </div>
+              <div className="text-sm text-gray-500">
+                Powered by Mistral AI OCR
+              </div>
+            </div>
+          </header>
+
+          {/* Main Comparison View */}
+          <main className="flex-1 overflow-hidden">
+            <ComparisonView 
+              file={currentFile}
+              extractedText={extractedText}
+              onCopyText={handleCopyText}
+              className="h-full"
+            />
+          </main>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -21,30 +83,6 @@ function App() {
 
         <main>
           <FileUpload onComplete={handleOCRComplete} />
-          
-          {extractedText && (
-            <div className="w-full max-w-4xl mx-auto mt-8 p-6">
-              <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-2xl font-bold text-gray-900">Extracted Text</h2>
-                  <button 
-                    onClick={() => navigator.clipboard.writeText(extractedText)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-                  >
-                    Copy to Clipboard
-                  </button>
-                </div>
-                <div className="bg-gray-50 border rounded-lg p-4 max-h-96 overflow-y-auto">
-                  <pre className="whitespace-pre-wrap text-sm text-gray-800 leading-relaxed">
-                    {extractedText}
-                  </pre>
-                </div>
-                <div className="mt-4 text-sm text-gray-500">
-                  {extractedText.split('\n').length} lines • {extractedText.length} characters
-                </div>
-              </div>
-            </div>
-          )}
         </main>
 
         <footer className="mt-16 text-center text-gray-500 text-sm">

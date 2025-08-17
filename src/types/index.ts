@@ -30,3 +30,16 @@ export interface ComparisonViewState {
   rightPanelWidth: number;
   syncScrolling: boolean;
 }
+
+export interface TextSearchResult {
+  index: number;
+  length: number;
+  preview: string;
+}
+
+export interface AppState {
+  currentFile: File | null;
+  extractedText: string | null;
+  showComparison: boolean;
+  isProcessing: boolean;
+}

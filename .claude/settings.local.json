@@ -11,15 +11,23 @@
       "mcp__sequential-thinking__sequentialthinking",
       "Bash(npm run build:*)",
       "Bash(npm run dev:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "mcp__n8n-mcp__search_nodes",
+      "Bash(find:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "WebFetch(domain:github.com)",
+      "Bash(rm:*)"
     ],
     "deny": []
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "supabase",
     "sequential-thinking",
     "shadcn-ui",
     "Framelink Figma MCP",
-    "n8n-mcp"
+    "n8n-mcp",
+    "context7"
   ]
 }
