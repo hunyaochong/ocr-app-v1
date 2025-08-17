@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init:*)",
+      "Bash(npm install)",
+      "Bash(npx tailwindcss init:*)",
+      "Bash(./node_modules/.bin/tailwindcss:*)",
+      "Bash(npm install:*)",
+      "mcp__shadcn-ui__get_component",
+      "mcp__n8n-mcp__n8n_get_workflow",
+      "mcp__sequential-thinking__sequentialthinking",
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run lint)"
+    ],
+    "deny": []
+  },
+  "enabledMcpjsonServers": [
+    "supabase",
+    "sequential-thinking",
+    "shadcn-ui",
+    "Framelink Figma MCP",
+    "n8n-mcp"
+  ]
+}
