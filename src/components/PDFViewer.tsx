@@ -8,8 +8,8 @@ import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCcw } from 'lucide-re
 // Import PDF.js worker setup
 import '@/utils/pdfUtils';
 
-// Note: react-pdf CSS imports may be needed for full functionality
-// but are causing build issues - focusing on worker fix first
+// Note: react-pdf CSS imports cause build issues with Vite
+// The PDF viewer will work without them, just without some advanced styling
 
 export interface PDFViewerProps {
   file: File | null;

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { PDFViewer } from './PDFViewer';
 import { TextOutput } from './TextOutput';
+import { ErrorBoundary } from './ErrorBoundary';
 import { Button } from './ui/button';
 import { PanelLeftClose, PanelRightClose, Maximize2, Minimize2 } from 'lucide-react';
 
@@ -188,16 +189,18 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
             className="relative border-r border-gray-200"
             style={{ width: `${actualSizes.leftWidth}%` }}
           >
-            <PDFViewer 
-              file={file}
-              className="h-full"
-              onLoadSuccess={(numPages) => {
-                console.log(`PDF loaded with ${numPages} pages`);
-              }}
-              onLoadError={(error) => {
-                console.error('PDF load error:', error);
-              }}
-            />
+            <ErrorBoundary>
+              <PDFViewer 
+                file={file}
+                className="h-full"
+                onLoadSuccess={(numPages) => {
+                  console.log(`PDF loaded with ${numPages} pages`);
+                }}
+                onLoadError={(error) => {
+                  console.error('PDF load error:', error);
+                }}
+              />
+            </ErrorBoundary>
           </div>
         )}
 
@@ -222,11 +225,13 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
             className="relative"
             style={{ width: `${actualSizes.rightWidth}%` }}
           >
-            <TextOutput 
-              text={extractedText}
-              onCopy={onCopyText}
-              className="h-full"
-            />
+            <ErrorBoundary>
+              <TextOutput 
+                text={extractedText}
+                onCopy={onCopyText}
+                className="h-full"
+              />
+            </ErrorBoundary>
           </div>
         )}
       </div>

@@ -17,7 +17,17 @@
       "mcp__context7__resolve-library-id",
       "mcp__context7__get-library-docs",
       "WebFetch(domain:github.com)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "mcp__n8n-mcp__n8n_list_executions",
+      "mcp__n8n-mcp__n8n_get_execution",
+      "mcp__gemini-cli__ask-gemini",
+      "Bash(claude doctor)",
+      "Bash(ccusage daily:*)",
+      "Bash(claude usage)",
+      "Bash(claude usage --help)",
+      "Bash(claude stats)",
+      "Bash(npx ccusage@latest daily:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": []
   },
