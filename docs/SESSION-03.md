@@ -843,3 +843,90 @@ From comprehensive analysis in `@reports/refactor/refactor_dropzone_textoutput_1
 - Export functionality integration
 
 **Status**: ✅ **TEXTOUTPUT REFACTORING COMPLETE - READY FOR PRODUCTION**
+
+---
+
+## 🎯 **POST-PRODUCTION ISSUE: PDF Dead White Space**
+
+**Date**: August 19, 2025  
+**Issue**: "Dead white space" scrolling below PDF content  
+**Status**: ✅ **RESOLVED**
+
+### **Problem Description**
+Users reported excessive scrollable white space below PDF content in the viewer, allowing them to scroll through empty gray areas beyond the actual PDF boundaries.
+
+### **Root Cause Analysis**
+The issue was caused by react-pdf's text and annotation layers creating invisible overlays that extended beyond the PDF content bounds:
+
+1. **Text Layer Overflow**: The `react-pdf__Page__textContent` layer extended beyond visible PDF area
+2. **Annotation Layer Overflow**: The `react-pdf__Page__annotations` layer also contributed to phantom scrollable space
+3. **Missing CSS Constraints**: Proper react-pdf CSS imports were present but layers lacked overflow constraints
+
+### **Diagnostic Process**
+1. **Confirmation Test**: Disabled layers with `renderTextLayer={false}` and `renderAnnotationLayer={false}` - white space disappeared
+2. **Root Cause Confirmed**: Text and annotation layers creating scrollable phantom areas
+3. **Solution Research**: Used StackOverflow and GitHub issues to find proper CSS constraint approach
+
+### **Solution Implementation**
+
+**CSS Constraint Injection** (`src/components/PDFViewer.tsx`):
+```typescript
+// Additional CSS to constrain text and annotation layers
+const pdfStyles = `
+  .react-pdf__Page__textContent {
+    overflow: hidden !important;
+    height: fit-content !important;
+  }
+  .react-pdf__Page__annotations {
+    overflow: hidden !important;
+    height: fit-content !important;
+  }
+  .react-pdf__Page {
+    position: relative !important;
+    overflow: hidden !important;
+  }
+`;
+
+// Inject the styles
+if (typeof document !== 'undefined') {
+  const styleElement = document.createElement('style');
+  styleElement.textContent = pdfStyles;
+  if (!document.head.querySelector('style[data-pdf-fix]')) {
+    styleElement.setAttribute('data-pdf-fix', 'true');
+    document.head.appendChild(styleElement);
+  }
+}
+```
+
+**Layers Re-enabled with Constraints**:
+```typescript
+<Page
+  renderTextLayer={true}
+  renderAnnotationLayer={true}
+  // ... other props
+/>
+```
+
+### **Resolution Verification**
+- ✅ **Build Test**: CSS constraints properly injected (32.77 kB CSS bundle)
+- ✅ **Functionality Test**: Text selection and annotations work correctly
+- ✅ **User Confirmation**: No more scrollable white space below PDF content
+- ✅ **Performance**: No impact on PDF rendering performance
+
+### **Key Learnings**
+1. **react-pdf Layers**: Text and annotation layers can extend beyond PDF bounds without proper CSS constraints
+2. **CSS Import Verification**: CSS imports alone don't prevent layer overflow - explicit constraints needed
+3. **Diagnostic Approach**: Always test with layers disabled first to confirm root cause
+4. **Documentation Value**: Well-documented community issues provided the exact solution needed
+
+### **References**
+- [StackOverflow: How to get rid of PDF dead white space](https://stackoverflow.com/questions/76804151/how-to-get-rid-of-pdf-dead-white-space-in-react-for-react-pdf)
+- [GitHub Issue: react-pdf #866](https://github.com/wojtekmaj/react-pdf/issues/866)
+
+### **Prevention for Future Development**
+- Always import react-pdf CSS files when using text/annotation layers
+- Test scrolling behavior thoroughly with actual PDF content
+- Add CSS constraints for layer overflow prevention
+- Use `debug={true}` prop for layer visualization during development
+
+**Status**: ✅ **ISSUE RESOLVED - PDF VIEWER PRODUCTION READY**

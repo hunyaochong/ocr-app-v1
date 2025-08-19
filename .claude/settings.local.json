@@ -27,7 +27,12 @@
       "Bash(claude usage --help)",
       "Bash(claude stats)",
       "Bash(npx ccusage@latest daily:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(npx:*)",
+      "mcp__playwright__browser_navigate",
+      "Bash(lsof:*)",
+      "WebFetch(domain:stackoverflow.com)",
+      "Bash(pkill:*)"
     ],
     "deny": []
   },

@@ -49,6 +49,17 @@ OCR App v1 is a React-based web application that extracts text from PDF document
 - **Icons**: Lucide React
 - **State Management**: React hooks (useState, useCallback, useRef)
 - **API Integration**: Custom OCR API service with retry logic
+- **Text Processing**: Advanced search with debouncing, regex caching, and highlighting
+- **Component Architecture**: Modular design with focused subcomponents
+
+### Component Architecture
+- **TextOutput**: Modular container component (refactored from 268 to ~50 lines)
+  - **TextHeader**: Controls (search toggle, copy button) with user feedback
+  - **TextSearch**: Search input with navigation and results display
+  - **TextDisplay**: Text rendering with ReactMarkdown and highlight support
+  - **TextStats**: Word count, character count, and reading time statistics
+- **Custom Hooks**: useTextSearch, useTextHighlighting, useOCRProcessing, usePDFViewer
+- **Performance Optimizations**: LRU regex caching, debounced operations, safe iteration patterns
 
 ### Key Features
 - PDF file upload with validation (100MB max, PDF only)
@@ -57,6 +68,10 @@ OCR App v1 is a React-based web application that extracts text from PDF document
 - Resizable panels with collapse/expand functionality
 - Progress tracking and error handling with retry mechanisms
 - Text copying functionality
+- Advanced text search with debounced input and regex pattern caching
+- Real-time text highlighting with performance optimization
+- Text statistics display (word count, character count, reading time)
+- Modular component architecture for improved maintainability
 
 ### Build Commands
 - `npm run dev` - Start development server

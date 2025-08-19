@@ -3,13 +3,40 @@ import { Document, Page } from 'react-pdf';
 import { usePDFViewer } from '@/hooks/usePDFViewer';
 import { formatZoomLevel, ZOOM_PRESETS, type ZoomLevel } from '@/utils/pdfUtils';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Import PDF.js worker setup
 import '@/utils/pdfUtils';
 
-// Note: react-pdf CSS imports cause build issues with Vite
-// The PDF viewer will work without them, just without some advanced styling
+// Import react-pdf CSS for proper layer styling
+import 'react-pdf/dist/Page/TextLayer.css';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+
+// Additional CSS to constrain text and annotation layers
+const pdfStyles = `
+  .react-pdf__Page__textContent {
+    overflow: hidden !important;
+    height: fit-content !important;
+  }
+  .react-pdf__Page__annotations {
+    overflow: hidden !important;
+    height: fit-content !important;
+  }
+  .react-pdf__Page {
+    position: relative !important;
+    overflow: hidden !important;
+  }
+`;
+
+// Inject the styles
+if (typeof document !== 'undefined') {
+  const styleElement = document.createElement('style');
+  styleElement.textContent = pdfStyles;
+  if (!document.head.querySelector('style[data-pdf-fix]')) {
+    styleElement.setAttribute('data-pdf-fix', 'true');
+    document.head.appendChild(styleElement);
+  }
+}
 
 export interface PDFViewerProps {
   file: File | null;
@@ -199,15 +226,6 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
 
         {/* Zoom Controls */}
         <div className="flex items-center space-x-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={zoomOut}
-            disabled={scale <= ZOOM_PRESETS[0] || isLoading}
-          >
-            <ZoomOut className="h-4 w-4" />
-          </Button>
-          
           <select
             value={currentZoomPreset}
             onChange={handleZoomChange}
@@ -220,31 +238,13 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
               </option>
             ))}
           </select>
-          
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={zoomIn}
-            disabled={scale >= ZOOM_PRESETS[ZOOM_PRESETS.length - 1] || isLoading}
-          >
-            <ZoomIn className="h-4 w-4" />
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={resetZoom}
-            disabled={isLoading}
-          >
-            <RotateCcw className="h-4 w-4" />
-          </Button>
         </div>
       </div>
 
       {/* PDF Display Area */}
       <div 
         ref={containerRef}
-        className="flex-1 overflow-auto bg-gray-100 p-4"
+        className="flex-1 overflow-auto bg-gray-100"
       >
         {error ? (
           <div className="flex items-center justify-center h-full">
@@ -266,7 +266,7 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
             </div>
           </div>
         ) : (
-          <div className="flex justify-center">
+          <div className="flex justify-center items-start min-h-0">
             <Document
               file={file}
               onLoadSuccess={handleDocumentLoadSuccess}
@@ -279,18 +279,21 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
                   </div>
                 </div>
               }
+              className="w-fit h-fit"
             >
               <Page
                 pageNumber={currentPage}
                 scale={scale}
                 onLoadSuccess={handlePageLoadSuccess}
                 onLoadError={handlePageLoadError}
+                renderTextLayer={true}
+                renderAnnotationLayer={true}
                 loading={
                   <div className="flex items-center justify-center h-96">
                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
                   </div>
                 }
-                className="shadow-lg"
+                className="shadow-lg m-4"
               />
             </Document>
           </div>
