@@ -78,3 +78,9 @@ OCR App v1 is a React-based web application that extracts text from PDF document
 - `npm run build` - Build for production (runs TypeScript check + Vite build)
 - `npm run lint` - Run ESLint
 - `npm run preview` - Preview production build
+
+### Current Project Status
+- **Bundle Size**: ~890KB total (JS: 857KB, CSS: 33KB) - optimization needed for Phase 4
+- **Recent Updates**: PDF dead white space issue resolved (August 19, 2025)
+- **Phase Status**: Phases 1-3 completed, Phase 4 (Google Docs export, scroll sync) planned
+- **Architecture**: Fully modular with advanced text search and highlighting implemented
