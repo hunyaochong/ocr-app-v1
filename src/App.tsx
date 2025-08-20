@@ -1,13 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FileUpload } from '@/components/FileUpload';
 import { ComparisonView } from '@/components/ComparisonView';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { AuthCallbackPage } from '@/utils/authCallback';
 
 function App() {
   const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [extractedText, setExtractedText] = useState<string | null>(null);
   const [showComparison, setShowComparison] = useState(false);
+  const [isAuthCallback, setIsAuthCallback] = useState(false);
+
+  useEffect(() => {
+    // Check if this is an auth callback URL
+    const url = new URL(window.location.href);
+    const hasAuthParams = url.searchParams.has('code') || url.searchParams.has('error');
+    const isCallback = url.pathname.includes('/auth/callback') || hasAuthParams;
+    
+    // Debug logging
+    if (hasAuthParams) {
+      console.log('Auth callback detected:', {
+        pathname: url.pathname,
+        hasCode: url.searchParams.has('code'),
+        hasError: url.searchParams.has('error'),
+        fullUrl: url.href
+      });
+    }
+    
+    setIsAuthCallback(isCallback);
+  }, []);
 
   const handleOCRComplete = (result: string, file: File) => {
     setExtractedText(result);
@@ -27,6 +48,11 @@ function App() {
       navigator.clipboard.writeText(extractedText);
     }
   };
+
+  // Handle auth callback
+  if (isAuthCallback) {
+    return <AuthCallbackPage />;
+  }
 
   if (showComparison && currentFile && extractedText) {
     return (
@@ -50,9 +76,6 @@ function App() {
                     PDF and text comparison view
                   </p>
                 </div>
-              </div>
-              <div className="text-sm text-gray-500">
-                Powered by Mistral AI OCR
               </div>
             </div>
           </header>

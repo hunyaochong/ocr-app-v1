@@ -1,16 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
-import { FilePond, registerPlugin } from 'react-filepond';
-import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
-import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useOCRProcessing } from '@/hooks/useOCRProcessing';
 import { ProcessingStates } from '@/components/ProcessingStates';
-
-// Import FilePond styles
-import 'filepond/dist/filepond.min.css';
-
-// Register FilePond plugins
-registerPlugin(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
+import { FileUploadDialog } from '@/components/FileUploadDialog';
+import { FileText, Upload } from 'lucide-react';
 
 interface FileUploadProps {
   onComplete?: (result: string, file: File) => void;
@@ -18,13 +11,10 @@ interface FileUploadProps {
 
 export function FileUpload({ onComplete }: FileUploadProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const filePondRef = useRef<FilePond>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
   
   const handleReset = () => {
     setSelectedFile(null);
-    if (filePondRef.current) {
-      filePondRef.current.removeFiles();
-    }
   };
   
   const ocrProcessing = useOCRProcessing({
@@ -41,23 +31,20 @@ export function FileUpload({ onComplete }: FileUploadProps) {
 
   const { state, processFile, retry, cancel, reset } = ocrProcessing;
 
-  const handleFileAdd = (fileItems: unknown[]) => {
-    if (fileItems.length > 0) {
-      const fileItem = fileItems[0] as { file: File };
-      setSelectedFile(fileItem.file);
-    }
-  };
-
-  const handleFileRemove = () => {
-    setSelectedFile(null);
-    if (state.status !== 'idle') {
-      reset();
-    }
+  const handleFileSelect = (file: File) => {
+    setSelectedFile(file);
   };
 
   const handleProcessStart = async () => {
     if (selectedFile) {
       await processFile(selectedFile);
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+    if (state.status !== 'idle') {
+      reset();
     }
   };
 
@@ -105,35 +92,60 @@ export function FileUpload({ onComplete }: FileUploadProps) {
           </p>
         </div>
 
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
-          <FilePond
-            ref={filePondRef}
-            allowMultiple={false}
-            acceptedFileTypes={['application/pdf']}
-            maxFileSize="100MB"
-            labelIdle='Drag & Drop your PDF or <span class="filepond--label-action">Browse</span>'
-            onupdatefiles={handleFileAdd}
-            onremovefile={handleFileRemove}
-            dropOnPage={true}
-            dropValidation={true}
-            className="mb-4"
-          />
-        </div>
-
-        {selectedFile && (
-          <div className="text-center">
-            <div className="text-sm text-muted-foreground mb-4">
-              Ready to process: {selectedFile.name}
-            </div>
-            <Button 
-              onClick={handleProcessStart}
+        {!selectedFile ? (
+          <div className="flex justify-center">
+            <Button
+              onClick={() => setDialogOpen(true)}
               size="lg"
-              className="w-full sm:w-auto"
+              className="flex items-center gap-2"
             >
-              Start OCR Processing
+              <Upload className="h-5 w-5" />
+              Upload PDF File
             </Button>
           </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="border rounded-lg p-4 bg-gray-50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <FileText className="h-8 w-8 text-blue-500" />
+                  <div>
+                    <p className="font-medium">{selectedFile.name}</p>
+                    <p className="text-sm text-gray-500">
+                      {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  onClick={handleRemoveFile}
+                  variant="ghost"
+                  size="sm"
+                  className="text-red-600 hover:text-red-700"
+                >
+                  Remove
+                </Button>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <Button 
+                onClick={handleProcessStart}
+                size="lg"
+                className="w-full sm:w-auto"
+              >
+                Start OCR Processing
+              </Button>
+            </div>
+          </div>
         )}
+
+        <FileUploadDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          onFileSelect={handleFileSelect}
+          accept="application/pdf"
+          maxSize={100 * 1024 * 1024} // 100MB
+        />
       </div>
     </div>
   );

@@ -22,14 +22,11 @@ This project uses a structured memory bank system with specialized context files
 
 ### Core Context Files
 
-* **CLAUDE-activeContext.md** - Current session state, goals, and progress (if exists)
-* **CLAUDE-patterns.md** - Established code patterns and conventions (if exists)
-* **CLAUDE-decisions.md** - Architecture decisions and rationale (if exists)
-* **CLAUDE-troubleshooting.md** - Common issues and proven solutions (if exists)
-* **CLAUDE-config-variables.md** - Configuration variables reference (if exists)
-* **CLAUDE-temp.md** - Temporary scratch pad (only read when referenced)
+* **CLAUDE-troubleshooting.md** - Common issues and proven solutions (optimized)
+* **CLAUDE-config-variables.md** - Configuration variables reference
+* **archive/resolved-issues.md** - Historical troubleshooting cases (archived)
 
-**Important:** Always reference the active context file first to understand what's currently being worked on and maintain session continuity.
+**Important:** Check these files for relevant information before starting work to understand the current system architecture and troubleshooting patterns.
 
 ### Memory Bank System Backups
 
@@ -41,10 +38,11 @@ OCR App v1 is a React-based web application that extracts text from PDF document
 
 ### Technology Stack
 - **Frontend**: React 19.1.1 + TypeScript + Vite
-- **Styling**: Tailwind CSS 4.1.12
+- **Styling**: Tailwind CSS 3.4.17 (downgraded from v4 for compatibility)
 - **UI Components**: shadcn/ui with Radix UI primitives
 - **PDF Handling**: react-pdf with PDF.js 5.3.93
-- **File Upload**: FilePond with validation plugins
+- **File Upload**: Custom FileUploadDialog (Grok-inspired design)
+- **Export Integration**: Google Docs API with OAuth 2.0 (new feature)
 - **OCR Backend**: n8n webhook hosted on Railway (Mistral AI OCR)
 - **Icons**: Lucide React
 - **State Management**: React hooks (useState, useCallback, useRef)
@@ -62,16 +60,18 @@ OCR App v1 is a React-based web application that extracts text from PDF document
 - **Performance Optimizations**: LRU regex caching, debounced operations, safe iteration patterns
 
 ### Key Features
-- PDF file upload with validation (100MB max, PDF only)
+- PDF file upload with custom Grok-inspired modal interface (drag & drop)
 - OCR text extraction via external API
 - Split-pane comparison view (PDF vs extracted text)
 - Resizable panels with collapse/expand functionality
 - Progress tracking and error handling with retry mechanisms
 - Text copying functionality
+- Google Docs export with OAuth 2.0 authentication and folder selection
 - Advanced text search with debounced input and regex pattern caching
 - Real-time text highlighting with performance optimization
 - Text statistics display (word count, character count, reading time)
 - Modular component architecture for improved maintainability
+- Resolved CSS styling issues (Tailwind v4 to v3 migration)
 
 ### Build Commands
 - `npm run dev` - Start development server
@@ -81,6 +81,11 @@ OCR App v1 is a React-based web application that extracts text from PDF document
 
 ### Current Project Status
 - **Bundle Size**: ~890KB total (JS: 857KB, CSS: 33KB) - optimization needed for Phase 4
-- **Recent Updates**: PDF dead white space issue resolved (August 19, 2025)
-- **Phase Status**: Phases 1-3 completed, Phase 4 (Google Docs export, scroll sync) planned
+- **Recent Major Updates**: 
+  - CSS styling system fixed (Tailwind v4 → v3 migration)
+  - Custom FileUploadDialog implemented (replaced FilePond)
+  - Google Docs export feature added with OAuth 2.0
+  - PDF dead white space issue resolved (August 19, 2025)
+- **Development State**: Fully functional with resolved styling issues
+- **Phase Status**: Phase 4 partially implemented (Google Docs export completed)
 - **Architecture**: Fully modular with advanced text search and highlighting implemented

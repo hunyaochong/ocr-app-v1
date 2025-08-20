@@ -26,6 +26,9 @@ dist-ssr
 # MCP configuration with secrets
 .mcp.json
 
+# API credentials
+.env
+
 # Claude Code memory bank system and configuration
 CLAUDE-*.md
 !CLAUDE.md

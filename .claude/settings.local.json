@@ -32,7 +32,14 @@
       "mcp__playwright__browser_navigate",
       "Bash(lsof:*)",
       "WebFetch(domain:stackoverflow.com)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(mv:*)",
+      "Bash(npm uninstall:*)",
+      "mcp__shadcn-ui__list_components",
+      "mcp__Bright_Data__search_engine",
+      "mcp__Bright_Data__scrape_as_markdown",
+      "Bash(curl:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   },

@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Copy, Search } from 'lucide-react';
 import { TextStats } from './TextStats';
+import { ExportButton } from '@/components/ExportButton';
 
 export interface TextHeaderProps {
   title?: string;
@@ -56,6 +57,11 @@ export function TextHeader({
           <Copy className="h-4 w-4" />
           {copySuccess ? 'Copied!' : 'Copy'}
         </Button>
+
+        <ExportButton 
+          text={text}
+          disabled={!text.trim()}
+        />
       </div>
     </div>
   );
