@@ -254,7 +254,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
         return (
           <>
             <FileText className="h-4 w-4" />
-            <span className="hidden sm:inline ml-2">Export</span>
+            <span className="hidden sm:inline">Google Docs</span>
           </>
         );
     }

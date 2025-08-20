@@ -3,7 +3,6 @@ import { useTextSearch } from '@/hooks/useTextSearch';
 import { TextHeader } from '@/components/text/TextHeader';
 import { TextSearch } from '@/components/text/TextSearch';
 import { TextDisplay } from '@/components/text/TextDisplay';
-import { TextStats } from '@/components/text/TextStats';
 
 export interface TextOutputProps {
   text: string;
@@ -74,8 +73,6 @@ export const TextOutput: React.FC<TextOutputProps> = ({
         searchState={searchHook.searchState}
         className="flex-1"
       />
-      
-      <TextStats text={text} />
     </div>
   );
 };

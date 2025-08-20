@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Document, Page } from 'react-pdf';
 import { usePDFViewer } from '@/hooks/usePDFViewer';
-import { formatZoomLevel, ZOOM_PRESETS, type ZoomLevel } from '@/utils/pdfUtils';
+import { type ZoomLevel } from '@/utils/pdfUtils';
 import { Button } from '@/components/ui/button';
+import { ZoomSlider } from '@/components/ui/ZoomSlider';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Import PDF.js worker setup
@@ -74,7 +75,6 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
   } = usePDFViewer();
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const [pageWidth, setPageWidth] = useState<number>(0);
 
   // Handle container resize
   useEffect(() => {
@@ -116,8 +116,7 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
   };
 
   // Handle page load to get dimensions
-  const handlePageLoadSuccess = (page: { width: number }) => {
-    setPageWidth(page.width);
+  const handlePageLoadSuccess = () => {
     setLoading(false);
   };
 
@@ -133,9 +132,8 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
     }
   };
 
-  // Handle zoom select change
-  const handleZoomChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const zoomValue = parseFloat(e.target.value);
+  // Handle zoom change from slider
+  const handleZoomChange = (zoomValue: number) => {
     setZoomPreset(zoomValue as ZoomLevel);
   };
 
@@ -190,54 +188,51 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
     <div className={`flex flex-col h-full bg-white border border-gray-200 rounded-lg shadow-sm ${className}`}>
       {/* Toolbar */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
-        {/* Page Navigation */}
+        {/* Pagination Controls - Left Side */}
         <div className="flex items-center space-x-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={goToPreviousPage}
-            disabled={!canGoPrevious || isLoading}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          
-          <div className="flex items-center space-x-2">
-            <input
-              type="number"
-              min="1"
-              max={numPages}
-              value={currentPage}
-              onChange={handlePageInputChange}
-              className="w-16 px-2 py-1 text-sm border border-gray-300 rounded text-center"
-              disabled={isLoading}
-            />
-            <span className="text-sm text-gray-600">of {numPages}</span>
-          </div>
-          
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={goToNextPage}
-            disabled={!canGoNext || isLoading}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
+          {numPages > 0 && (
+            <>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={goToPreviousPage}
+                disabled={!canGoPrevious || isLoading}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              
+              <div className="flex items-center space-x-2">
+                <input
+                  type="number"
+                  min="1"
+                  max={numPages}
+                  value={currentPage}
+                  onChange={handlePageInputChange}
+                  className="w-16 px-2 py-1 text-sm border border-gray-300 rounded text-center"
+                  disabled={isLoading}
+                />
+                <span className="text-sm text-gray-600">of {numPages}</span>
+              </div>
+              
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={goToNextPage}
+                disabled={!canGoNext || isLoading}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </>
+          )}
         </div>
 
-        {/* Zoom Controls */}
-        <div className="flex items-center space-x-2">
-          <select
+        {/* Zoom Controls - Right Side */}
+        <div className="w-48">
+          <ZoomSlider
             value={currentZoomPreset}
             onChange={handleZoomChange}
-            className="px-2 py-1 text-sm border border-gray-300 rounded"
             disabled={isLoading}
-          >
-            {ZOOM_PRESETS.map((preset) => (
-              <option key={preset} value={preset}>
-                {formatZoomLevel(preset)}
-              </option>
-            ))}
-          </select>
+          />
         </div>
       </div>
 
@@ -300,13 +295,6 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
         )}
       </div>
 
-      {/* Status Bar */}
-      {numPages > 0 && (
-        <div className="px-4 py-2 border-t border-gray-200 bg-gray-50 text-sm text-gray-600">
-          Page {currentPage} of {numPages} • {formatZoomLevel(scale)} zoom
-          {pageWidth > 0 && ` • ${Math.round(pageWidth * scale)}px wide`}
-        </div>
-      )}
     </div>
   );
 };

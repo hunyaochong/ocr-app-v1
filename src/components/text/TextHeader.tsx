@@ -1,10 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Copy, Search } from 'lucide-react';
-import { TextStats } from './TextStats';
 import { ExportButton } from '@/components/ExportButton';
 
 export interface TextHeaderProps {
-  title?: string;
   text: string;
   onSearchToggle: () => void;
   onCopy: () => void;
@@ -13,16 +11,14 @@ export interface TextHeaderProps {
 }
 
 /**
- * TextHeader component provides controls and metadata for text display
- * @param title - Header title (defaults to "Extracted Text")
- * @param text - Text for statistics calculation
+ * TextHeader component provides controls for text display
+ * @param text - Text for export functionality
  * @param onSearchToggle - Function to toggle search mode
  * @param onCopy - Function to copy text to clipboard
  * @param isSearching - Whether search mode is active
  * @param copySuccess - Whether copy operation was successful
  */
 export function TextHeader({
-  title = 'Extracted Text',
   text,
   onSearchToggle,
   onCopy,
@@ -32,8 +28,6 @@ export function TextHeader({
   return (
     <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
       <div className="flex items-center space-x-2">
-        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-        <TextStats text={text} variant="inline" />
       </div>
       
       <div className="flex items-center space-x-2">
@@ -53,9 +47,10 @@ export function TextHeader({
           onClick={onCopy}
           className={copySuccess ? 'bg-green-50 border-green-200' : ''}
           aria-label={copySuccess ? 'Copied to clipboard' : 'Copy to clipboard'}
+          title={copySuccess ? 'Copied to clipboard' : 'Copy to clipboard'}
         >
           <Copy className="h-4 w-4" />
-          {copySuccess ? 'Copied!' : 'Copy'}
+          {copySuccess && <span className="ml-2 text-sm">Copied!</span>}
         </Button>
 
         <ExportButton 

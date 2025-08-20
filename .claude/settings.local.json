@@ -39,7 +39,9 @@
       "mcp__Bright_Data__search_engine",
       "mcp__Bright_Data__scrape_as_markdown",
       "Bash(curl:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "WebFetch(domain:www.radix-ui.com)",
+      "WebFetch(domain:lucide.dev)"
     ],
     "deny": []
   },

@@ -3,7 +3,7 @@ import { PDFViewer } from './PDFViewer';
 import { TextOutput } from './TextOutput';
 import { ErrorBoundary } from './ErrorBoundary';
 import { Button } from './ui/button';
-import { PanelLeftClose, PanelRightClose, Maximize2, Minimize2 } from 'lucide-react';
+import { RotateCcw, Fullscreen } from 'lucide-react';
 
 export interface ComparisonViewProps {
   file: File | null;
@@ -28,8 +28,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
     rightWidth: 50,
   });
   const [isResizing, setIsResizing] = useState(false);
-  const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
-  const [rightPanelCollapsed, setRightPanelCollapsed] = useState(false);
+  // Panel collapse states removed - no longer needed
   const [isFullscreen, setIsFullscreen] = useState(false);
   
   const containerRef = useRef<HTMLDivElement>(null);
@@ -79,22 +78,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
     };
   }, [isResizing, handleMouseMove, handleMouseUp]);
 
-  // Panel toggle functions
-  const toggleLeftPanel = () => {
-    setLeftPanelCollapsed(!leftPanelCollapsed);
-    if (leftPanelCollapsed) {
-      // Restore from collapsed state
-      setPanelSizes({ leftWidth: 50, rightWidth: 50 });
-    }
-  };
-
-  const toggleRightPanel = () => {
-    setRightPanelCollapsed(!rightPanelCollapsed);
-    if (rightPanelCollapsed) {
-      // Restore from collapsed state
-      setPanelSizes({ leftWidth: 50, rightWidth: 50 });
-    }
-  };
+  // Panel toggle functions (removed - no longer needed)
 
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
@@ -103,68 +87,28 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
   // Reset panels to 50/50
   const resetPanels = () => {
     setPanelSizes({ leftWidth: 50, rightWidth: 50 });
-    setLeftPanelCollapsed(false);
-    setRightPanelCollapsed(false);
   };
 
-  // Calculate actual panel widths based on collapsed state
-  const getActualPanelSizes = () => {
-    if (leftPanelCollapsed && rightPanelCollapsed) {
-      return { leftWidth: 50, rightWidth: 50 };
-    } else if (leftPanelCollapsed) {
-      return { leftWidth: 0, rightWidth: 100 };
-    } else if (rightPanelCollapsed) {
-      return { leftWidth: 100, rightWidth: 0 };
-    }
-    return panelSizes;
-  };
-
-  const actualSizes = getActualPanelSizes();
-  const showResizer = !leftPanelCollapsed && !rightPanelCollapsed;
+  // Calculate actual panel widths (simplified - no collapse states)
+  const actualSizes = panelSizes;
+  const showResizer = true;
 
   return (
     <div className={`h-full ${isFullscreen ? 'fixed inset-0 z-50 bg-white' : ''} ${className}`}>
       {/* Header Controls */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
         <div className="flex items-center space-x-2">
-          <h2 className="text-xl font-semibold text-gray-900">
-            PDF & Text Comparison
-          </h2>
-          {file && (
-            <span className="text-sm text-gray-500">
-              • {file.name}
-            </span>
-          )}
         </div>
         
         <div className="flex items-center space-x-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={toggleLeftPanel}
-            className={leftPanelCollapsed ? 'bg-blue-50 border-blue-200' : ''}
-          >
-            <PanelLeftClose className="h-4 w-4" />
-            PDF
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={toggleRightPanel}
-            className={rightPanelCollapsed ? 'bg-blue-50 border-blue-200' : ''}
-          >
-            <PanelRightClose className="h-4 w-4" />
-            Text
-          </Button>
           
           <Button 
             variant="outline" 
             size="sm" 
             onClick={resetPanels}
-            disabled={panelSizes.leftWidth === 50 && panelSizes.rightWidth === 50 && !leftPanelCollapsed && !rightPanelCollapsed}
+            disabled={panelSizes.leftWidth === 50 && panelSizes.rightWidth === 50}
           >
-            Reset
+            <RotateCcw className="h-4 w-4" />
           </Button>
           
           <Button 
@@ -172,7 +116,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
             size="sm" 
             onClick={toggleFullscreen}
           >
-            {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+            <Fullscreen className="h-4 w-4" />
           </Button>
         </div>
       </div>

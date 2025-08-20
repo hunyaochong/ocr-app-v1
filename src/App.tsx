@@ -96,20 +96,20 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto py-8">
-        <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">OCR Processing App</h1>
-          <p className="text-xl text-gray-600">
+      <div className="container mx-auto py-12">
+        <header className="text-center mb-12">
+          <h1 className="text-5xl font-bold text-gray-900 mb-4">OCR Processing App</h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Extract text from PDF documents using advanced OCR technology
           </p>
         </header>
 
-        <main>
+        <main className="flex-1">
           <FileUpload onComplete={handleOCRComplete} />
         </main>
 
-        <footer className="mt-16 text-center text-gray-500 text-sm">
-          <p>Powered by Mistral AI OCR • Built with React + TypeScript</p>
+        <footer className="mt-20 text-center text-gray-500 text-sm">
+          <p>Powered by Mistral AI OCR</p>
         </footer>
       </div>
     </div>

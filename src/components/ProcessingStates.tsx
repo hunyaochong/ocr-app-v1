@@ -47,13 +47,6 @@ export function ProcessingStates({ state, onRetry, onCancel, onReset }: Processi
         </div>
       </div>
 
-      <div className="w-full bg-gray-200 rounded-full h-3">
-        <div 
-          className="bg-green-600 h-3 rounded-full transition-all duration-300 ease-out"
-          style={{ width: `${Math.max(20, state.progress)}%` }}
-        />
-      </div>
-
       <div className="flex items-center justify-center space-x-2">
         <div className="animate-spin rounded-full h-5 w-5 border-2 border-green-600 border-t-transparent"></div>
         <span className="text-sm text-muted-foreground">
